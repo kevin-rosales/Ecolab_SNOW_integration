@@ -7,6 +7,7 @@ class LoginPage extends Component {
       username: "",
       password: "",
     },
+    access_token: "",
   };
 
   handleChange = (e) => {
@@ -17,15 +18,26 @@ class LoginPage extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log("hit!");
     const payload = {
       username: this.state.creds.username,
       password: this.state.creds.password,
     };
 
-    axios.post("/snow/auth", payload).then((res) => {
-      console.log(res.data);
-    });
+    axios
+      .post("/snow/auth", payload)
+      .then((res) => {
+        const { access_token } = res.data;
+        this.setState({ access_token: access_token });
+        this.props.history.push("/home");
+      })
+      .catch((e) => {
+        console.log("error", e);
+        if (e.message.indexOf("status code 401") > 0) {
+          console.log("Access Denied");
+        } else {
+          console.log("Error with login");
+        }
+      });
   };
 
   render() {
