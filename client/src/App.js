@@ -2,7 +2,11 @@ import "./App.css";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import LoginPage from "./components/LoginPage";
-import HomePage from "./components/HomePage";
+import SearchUser from "./components/SearchUser";
+import NavBar from "./components/NavBar";
+import SearchIncident from "./components/SearchIncident";
+import SearchKnowledge from "./components/SearchKnowledge";
+import CreateIncident from "./components/CreateIncident";
 
 class App extends Component {
   /*
@@ -27,9 +31,13 @@ class App extends Component {
     return (
       <div className="App">
         <Router>
+          <NavBar />
           <div>
             <Switch>
-              <Route exact path="/home" component={HomePage} />
+              <Route exact path="/knowledge" component={SearchKnowledge} />
+              <Route exact path="/incident" component={SearchIncident} />
+              <Route exact path="/create" component={CreateIncident} />
+              <Route exact path="/user" component={SearchUser} />
               <Route path="/" component={LoginPage} />
             </Switch>
           </div>

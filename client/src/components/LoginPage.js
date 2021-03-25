@@ -28,7 +28,7 @@ class LoginPage extends Component {
       .then((res) => {
         const { access_token } = res.data;
         this.setState({ access_token: access_token });
-        this.props.history.push("/home");
+        this.props.history.push("/user");
       })
       .catch((e) => {
         console.log("error", e);

@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+#navBar {
+  padding-top: 10px;
+}
+
+.nav-item {
+  color: rgb(0, 0, 0);
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
