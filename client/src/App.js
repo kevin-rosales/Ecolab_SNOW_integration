@@ -6,6 +6,7 @@ import SearchUser from "./components/SearchUser";
 import SearchIncident from "./components/SearchIncident";
 import SearchKnowledge from "./components/SearchKnowledge";
 import CreateIncident from "./components/CreateIncident";
+import Callback from "./components/Callback";
 
 class App extends Component {
   /*
@@ -32,6 +33,7 @@ class App extends Component {
         <Router>
           <div>
             <Switch>
+              <Route exact path="/callback" component={Callback} />
               <Route exact path="/knowledge" component={SearchKnowledge} />
               <Route exact path="/incident" component={SearchIncident} />
               <Route exact path="/create" component={CreateIncident} />

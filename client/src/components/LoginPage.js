@@ -1,68 +1,25 @@
 import React, { Component } from "react";
-import axios from "axios";
 
 class LoginPage extends Component {
-  state = {
-    creds: {
-      username: "",
-      password: "",
-    },
-    access_token: "",
-  };
-
-  handleChange = (e) => {
-    const enteredCreds = { ...this.state.creds };
-    enteredCreds[e.target.name] = e.target.value;
-    this.setState({ creds: enteredCreds });
-  };
-
-  handleSubmit = (e) => {
+  handleCLick = (e) => {
     e.preventDefault();
-    const payload = {
-      username: this.state.creds.username,
-      password: this.state.creds.password,
-    };
-
-    axios
-      .post("/snow/auth", payload)
-      .then((res) => {
-        const { access_token } = res.data;
-        this.setState({ access_token: access_token });
-        this.props.history.push("/user");
-      })
-      .catch((e) => {
-        console.log("error", e);
-        if (e.message.indexOf("status code 401") > 0) {
-          console.log("Access Denied");
-        } else {
-          console.log("Error with login");
-        }
-      });
+    window.open(
+      "https://login.microsoftonline.com/c1eb5112-7946-4c9d-bc57-40040cfe3a91/oauth2/v2.0/authorize?response_type=token&state=&client_id=6b68ef85-288b-4ef5-8019-b494be7a206e&scope=user_impersonation&redirect_uri=https://quiet-everglades-59480.herokuapp.com/callback&response_mode=query"
+    );
   };
 
   render() {
     return (
-      <div>
+      <div id="Mspage">
         <h1>Login Page </h1>
         <div>
-          <form onSubmit={this.handleSubmit}>
-            <div>
-              <label>Username: </label>
-              <input onChange={this.handleChange} type="text" name="username" />
-              <br />
-            </div>
-
-            <div>
-              <label>Password: </label>
-              <input
-                onChange={this.handleChange}
-                type="password"
-                name="password"
-              />
-            </div>
-
-            <button type="submit">Login</button>
-          </form>
+          <button
+            className="btn btn-primary"
+            onClick={this.handleCLick}
+            type="submit"
+          >
+            Login
+          </button>
         </div>
       </div>
     );

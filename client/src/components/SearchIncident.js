@@ -1,12 +1,20 @@
 import React, { Component } from "react";
 import NavBar from "./NavBar";
+import SearchBar from "./SearchBar";
 
 class SearchIncident extends Component {
+  onSearchSubmit = (term) => {
+    console.log("Incident!!!", term);
+  };
+
   render() {
     return (
       <div>
-        <NavBar/>
-        <h1>Search Incident</h1>
+        <NavBar />
+        <SearchBar
+          onSubmit={this.onSearchSubmit}
+          placeholder="Search Incident"
+        />
       </div>
     );
   }

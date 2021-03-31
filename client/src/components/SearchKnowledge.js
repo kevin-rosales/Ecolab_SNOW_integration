@@ -1,12 +1,20 @@
 import React, { Component } from "react";
 import NavBar from "./NavBar";
+import SearchBar from "./SearchBar";
 
 class SearchKnowledge extends Component {
+  onSearchSubmit = (term) => {
+    console.log("Knowledge!!!", term);
+  };
+
   render() {
     return (
       <div>
-        <NavBar/>
-        <h1>Search Knowledge</h1>
+        <NavBar />
+        <SearchBar
+          onSubmit={this.onSearchSubmit}
+          placeholder="Search Knowledge"
+        />
       </div>
     );
   }

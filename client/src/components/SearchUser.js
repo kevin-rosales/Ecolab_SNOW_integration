@@ -10,9 +10,8 @@ class SearchUser extends Component {
   render() {
     return (
       <div>
-        <NavBar/>
-        <h1>Search User</h1>
-        <SearchBar onSubmit={this.onSearchSubmit} />
+        <NavBar />
+        <SearchBar onSubmit={this.onSearchSubmit} placeholder="Search User" />
       </div>
     );
   }

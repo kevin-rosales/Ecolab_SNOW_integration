@@ -11,44 +11,51 @@ const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 const snowDomain = process.env.INSTANCE_DOMAIN;
 
-// Handle Auth call to Api endpoint within ServiceNow application registry
-router.post("/auth", async (req, res) => {
-  const { username, password } = req.body;
-  const authURL = `${snowDomain}/oauth_token.do`;
+// router.post("/callback", (req, res) => {
+//   console.log(req.body);
+//   res.sendStatus(200).send();
+// });
 
-  const authRequest = qs.stringify({
-    client_id: clientId,
-    client_secret: clientSecret,
-    grant_type: "password",
-    scope: "useraccount",
-    username: username,
-    password: password,
-  });
+// // Handle Auth call to Api endpoint within ServiceNow application registry
+// router.get("/auth", (req, res) => {
 
-  const config = {
-    method: "post",
-    url: authURL,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    data: authRequest,
-  };
+//   const authURL = `https://login.microsoftonline.com/c1eb5112-7946-4c9d-bc57-40040cfe3a91/oauth2/v2.0/authorize`;
 
-  // Checks to see if the axios call can be done
-  const tokenRes = await axios(config).catch((err) => {
-    console.error("SNOW AUTH ENDPOINT ERROR:", err.message);
-  });
+//   const authRequest = {
+//     scope: "user_impersonation",
+//     client_id: "6b68ef85-288b-4ef5-8019-b494be7a206e",
+//     redirect_uri:
+//       "https://quiet-everglades-59480.herokuapp.com/callback" /* Tell Josh to update the azure app */,
+//     response_mode: "query",
+//     response_type: "token",
+//   };
 
-  // checks to see if there's any data present within the axios request call to SNOW auth endpoint
-  if (tokenRes == undefined) {
-    console.log("Access Denied");
-    res.status(401).send({ errMessage: "Access Denied" });
-  } else {
-    //if successful send access token back
-    const { access_token } = tokenRes.data;
-    res.send({ access_token: access_token });
-  }
-});
+//   const config = {
+//     method: "get",
+//     url: authURL,
+//     headers: {
+//       "Content-Type": "text/html; charset=utf-8",
+//     },
+//     params: authRequest,
+//   };
+
+//   console.log(config);
+//   console.log("authRequest",JSON.stringify(authRequest));
+
+
+
+//   axios(config)
+//     .then((response) => {
+//       // console.log(JSON.stringify(response.data));
+//       // res.set("Content-Type", "text/html");
+
+//       res.send(response.data);
+//     })
+//     .catch((err) => {
+//       console.log(err.message);
+//     });
+
+// });
 
 // create Incident Endpoint
 router.post("/incident", (req, res) => {
