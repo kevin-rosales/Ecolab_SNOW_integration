@@ -22,8 +22,9 @@ class CreateIncident extends Component {
   };
 
   handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     console.log(this.state.incident);
+    this.props.history.push("/incident");
   };
 
   render() {
@@ -33,86 +34,102 @@ class CreateIncident extends Component {
         <h1>Create Incident</h1>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label" htmlFor="caller_id">Caller</label>
+            <label className="col-sm-4 col-form-label" htmlFor="caller_id">
+              Caller
+            </label>
             <input
               onChange={this.handleChange}
-              // className="form-control"
               value={this.state.incident.caller_id}
               type="text"
               name="caller_id"
             />
           </div>
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label" htmlFor="category">Category</label>
+            <label className="col-sm-4 col-form-label" htmlFor="category">
+              Category
+            </label>
             <input
               onChange={this.handleChange}
-              // className="form-control"
               value={this.state.incident.category}
               type="text"
               name="category"
             />
           </div>
-          <div className="form-group row"> 
-            <label className="col-sm-4 col-form-label" htmlFor="subcategory">SubCategory</label>
+          <div className="form-group row">
+            <label className="col-sm-4 col-form-label" htmlFor="subcategory">
+              SubCategory
+            </label>
             <input
               onChange={this.handleChange}
-              // className="form-control"
               value={this.state.incident.subcategory}
               type="text"
               name="subcategory"
             />
           </div>
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label" htmlFor="priority">Priority</label>
+            <label className="col-sm-4 col-form-label" htmlFor="priority">
+              Priority
+            </label>
             <input
               onChange={this.handleChange}
-              // className="form-control"
               value={this.state.incident.priority}
               type="text"
               name="priority"
             />
           </div>
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label" htmlFor="short_description">Short Description</label>
-            <input
+            <label
+              className="col-sm-4 col-form-label"
+              htmlFor="short_description"
+            >
+              Short Description
+            </label>
+            <textarea
+              style={{ width: "50vw" }}
               onChange={this.handleChange}
-              // className="form-control"
               value={this.state.incident.short_description}
               type="text"
               name="short_description"
             />
           </div>
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label" htmlFor="assigned_to">Assignment</label>
+            <label className="col-sm-4 col-form-label" htmlFor="assigned_to">
+              Assignment
+            </label>
             <input
               onChange={this.handleChange}
-              // className="form-control"
               value={this.state.incident.assigned_to}
               type="text"
               name="assigned_to"
             />
           </div>
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label" htmlFor="assignment_group">Group</label>
+            <label
+              className="col-sm-4 col-form-label"
+              htmlFor="assignment_group"
+            >
+              Group
+            </label>
             <input
               onChange={this.handleChange}
-              // className="form-control"
               value={this.state.incident.assignment_group}
               type="text"
               name="assignment_group"
             />
           </div>
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label" htmlFor="description">Description</label>
-            <input
-            // className="form-control"
+            <label className="col-sm-4 col-form-label" htmlFor="description">
+              Description
+            </label>
+            <textarea
+              style={{ width: "50vw" }}
               onChange={this.handleChange}
               value={this.state.incident.description}
               type="text"
               name="description"
             />
           </div>
-          <button className="btn">Create Incident</button>
+          <button className="btn btn-primary">Create Incident</button>
         </form>
       </div>
     );
