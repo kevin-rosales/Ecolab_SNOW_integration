@@ -7,6 +7,8 @@ import SearchIncident from "./components/SearchIncident";
 import SearchKnowledge from "./components/SearchKnowledge";
 import CreateIncident from "./components/CreateIncident";
 import Callback from "./components/Callback";
+import SingleUser from "./components/SingleUser";
+import NavBar from "./components/NavBar";
 
 class App extends Component {
   /*
@@ -28,15 +30,22 @@ class App extends Component {
   }
 
   render() {
+    const showNav =
+      window.location.pathname !== "/" &&
+      window.location.pathname !== "/callback" ? (
+        <NavBar />
+      ) : null;
     return (
       <div className="App">
         <Router>
+          {showNav}
           <div>
             <Switch>
               <Route exact path="/callback" component={Callback} />
               <Route exact path="/knowledge" component={SearchKnowledge} />
               <Route exact path="/incident" component={SearchIncident} />
               <Route exact path="/create" component={CreateIncident} />
+              <Route exact path="/user/:id" component={SingleUser} />
               <Route exact path="/user" component={SearchUser} />
               <Route path="/" component={LoginPage} />
             </Switch>

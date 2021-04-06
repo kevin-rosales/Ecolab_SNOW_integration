@@ -7,55 +7,8 @@ dotenv.config();
 const router = express.Router();
 
 //Grab env variables
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
 const snowDomain = process.env.INSTANCE_DOMAIN;
 
-// router.post("/callback", (req, res) => {
-//   console.log(req.body);
-//   res.sendStatus(200).send();
-// });
-
-// // Handle Auth call to Api endpoint within ServiceNow application registry
-// router.get("/auth", (req, res) => {
-
-//   const authURL = `https://login.microsoftonline.com/c1eb5112-7946-4c9d-bc57-40040cfe3a91/oauth2/v2.0/authorize`;
-
-//   const authRequest = {
-//     scope: "user_impersonation",
-//     client_id: "6b68ef85-288b-4ef5-8019-b494be7a206e",
-//     redirect_uri:
-//       "https://quiet-everglades-59480.herokuapp.com/callback" /* Tell Josh to update the azure app */,
-//     response_mode: "query",
-//     response_type: "token",
-//   };
-
-//   const config = {
-//     method: "get",
-//     url: authURL,
-//     headers: {
-//       "Content-Type": "text/html; charset=utf-8",
-//     },
-//     params: authRequest,
-//   };
-
-//   console.log(config);
-//   console.log("authRequest",JSON.stringify(authRequest));
-
-
-
-//   axios(config)
-//     .then((response) => {
-//       // console.log(JSON.stringify(response.data));
-//       // res.set("Content-Type", "text/html");
-
-//       res.send(response.data);
-//     })
-//     .catch((err) => {
-//       console.log(err.message);
-//     });
-
-// });
 
 // create Incident Endpoint
 router.post("/incident", (req, res) => {

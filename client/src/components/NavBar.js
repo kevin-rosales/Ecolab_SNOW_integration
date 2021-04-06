@@ -5,12 +5,12 @@ class NavBar extends Component {
   render() {
     return (
       <div id="navBar">
-        <nav className="nav nav-tabs">
-          <div className="nav nav-tabs" id="nav-tab" role="tablist">
+        <nav className="nav nav-pills">
+          <div className="nav nav-pills" id="pills-tab" role="tablist">
             <Link
               id="searchUser"
-              className="nav-item nav-link"
-              data-toggle="tab"
+              className="nav-item nav-link pillNav"
+              data-toggle="pill"
               role="tab"
               to={"/user"}
             >
@@ -19,8 +19,8 @@ class NavBar extends Component {
 
             <Link
               id="createIncident"
-              className="nav-item nav-link"
-              data-toggle="tab"
+              className="nav-item nav-link pillNav"
+              data-toggle="pill"
               role="tab"
               to={"/create"}
             >
@@ -29,8 +29,8 @@ class NavBar extends Component {
 
             <Link
               id="searchIncident"
-              className="nav-item nav-link "
-              data-toggle="tab"
+              className="nav-item nav-link pillNav "
+              data-toggle="pill"
               role="tab"
               to={"/incident"}
             >
@@ -39,8 +39,8 @@ class NavBar extends Component {
 
             <Link
               id="searchKnowledge"
-              className="nav-item nav-link"
-              data-toggle="tab"
+              className="nav-item nav-link pillNav"
+              data-toggle="pill"
               role="tab"
               to={"/knowledge"}
             >

@@ -2,6 +2,21 @@
   text-align: center;
 }
 
+.btn {
+  background-color: rgba(0, 112, 201, 0.9);
+}
+
+.pillNav.active {
+  background-color: rgba(0, 112, 201, 0.9) !important;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 0 0 0 rgba(0, 0, 0, 0.19);
+}
+
+.thead {
+  background-color: rgba(0, 112, 201, 0.9);
+  color: white;
+}
+
+
 #navBar {
   padding-top: 10px;
 }
