@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
 
 router.post("/callback", (req, res) => {
   console.log(req.body);
+  res.sendStatus(200);
 });
 
 router.use("/snow", snowController);
