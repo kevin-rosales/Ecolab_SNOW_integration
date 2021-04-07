@@ -10,6 +10,7 @@ const router = express.Router();
 const snowDomain = process.env.INSTANCE_DOMAIN;
 
 
+
 // create Incident Endpoint
 router.post("/incident", (req, res) => {
   let reqURL = `${snowDomain}/api/now/v1/table/incident`;

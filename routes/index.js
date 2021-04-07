@@ -8,6 +8,10 @@ router.get("/", (req, res) => {
   res.send("Hello World!! ");
 });
 
+router.post("/callback", (req, res) => {
+  console.log(req.body);
+});
+
 router.use("/snow", snowController);
 
 module.exports = router;

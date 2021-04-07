@@ -6,7 +6,7 @@ class SearchUser extends Component {
     results: [
       {
         id: "1",
-        pop: "Bob",
+        pop: "Bob Marley",
         sock: "Full Stack Developer ETS TEAM ",
         phone: "+1 (123) 894-4561",
         email: "krosales@liveperson",
@@ -16,7 +16,7 @@ class SearchUser extends Component {
       },
       {
         id: "2",
-        pop: "Kevin",
+        pop: "Kevin Costner",
         sock: "Junior Full Stack Developer",
         phone: "+1 (123) 894-4561",
         email: "test@liveperson",
@@ -26,7 +26,7 @@ class SearchUser extends Component {
       },
       {
         id: "3",
-        pop: "John",
+        pop: "John Lopez",
         sock: "Principal",
         phone: "+1 (123) 894-4561",
         email: "email@liveperson",
@@ -36,7 +36,7 @@ class SearchUser extends Component {
       },
       {
         id: "4",
-        pop: "Jose",
+        pop: "Jose Ortiz",
         sock: "Solutions Engineer",
         phone: "+1 (123) 894-4561",
         email: "krosales@liveperson",
@@ -46,7 +46,7 @@ class SearchUser extends Component {
       },
       {
         id: "5",
-        pop: "pop",
+        pop: "Peter Parker",
         sock: "Director of ETS Deployment",
         phone: "+1 (123) 894-4561",
         email: "krosales@liveperson",
