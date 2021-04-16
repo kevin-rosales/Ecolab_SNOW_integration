@@ -1,57 +1,59 @@
+import axios from "axios";
 import React, { Component } from "react";
 import SearchBar from "./SearchBar";
 
 class SearchIncident extends Component {
   state = {
-    Incidents: [
-      {
-        id: 1,
-        num: "INC0000015",
-        user: "Kevin Rosales",
-        created: "2020-06-10 23:38:46",
-        des:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas reiciendis quae, id sapiente ipsam ad nulla neque porro aliquam nemo, eaque cupiditate modi quis, doloribus labore fugiat nam maiores fuga.",
-      },
-      {
-        id: 2,
-        num: "INC0000015",
-        user: "Kevin Rosales",
-        created: "2020-06-10 23:38:46",
-        des:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas reiciendis quae, id sapiente ipsam ad nulla neque porro aliquam nemo, eaque cupiditate modi quis, doloribus labore fugiat nam maiores fuga.",
-      },
-      {
-        id: 3,
-        num: "INC0000015",
-        user: "Kevin Rosales",
-        created: "2020-06-10 23:38:46",
-        des:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas reiciendis quae, id sapiente ipsam ad nulla neque porro aliquam nemo, eaque cupiditate modi quis, doloribus labore fugiat nam maiores fuga.",
-      },
-    ],
+    Incidents: [],
   };
-  onSearchSubmit = (term) => {
-    console.log("Incident!!!", term);
+
+  onSearchSubmit = async (term) => {
+    console.log("Incident Search Term: ", term);
+    const payload = {
+      searchterm: term,
+    };
+
+    const resp = await axios
+      .post("/snow/searchIncident", payload)
+      .catch((err) => {
+        console.log("Search Incident Failed - ", err);
+      });
+
+    if (resp == undefined) {
+      this.setState({ Incidents: [{ id: 1, Noresult: "No Results" }] });
+    } else {
+      this.setState({ Incidents: resp.data.result });
+    }
   };
 
   render() {
-    const resultList = this.state.Incidents.map((res) => (
-      <div style={{ margin: "10px" }} key={res.id}>
-        <div style={{ textAlign: "left" }} className="card">
-          <div className="card-body">
-            <h5 className="card-title">{res.num}</h5>
-            <h6 className="card-subtitle mb-1 text-muted">
-              User: {res.user} | Created Date: {res.created}{" "}
-            </h6>
-            <br/>
-            <p className="card-text">
-              {" "}
-              <strong>Description:</strong> {res.des}
-            </p>
+    const resultList = this.state.Incidents.map((res) => {
+      if (!res.Noresult) {
+        return (
+          <div style={{ margin: "10px" }} key={res.number}>
+            <div style={{ textAlign: "left" }} className="card">
+              <div className="card-body">
+                <h5 className="card-title">{res.number}</h5>
+                <h6 className="card-subtitle mb-1 text-muted">
+                  User: {res.caller_id.value} | Created Date: {res.opened_at}{" "}
+                </h6>
+                <br />
+                <p className="card-text">
+                  {" "}
+                  <strong>Description:</strong> {res.description}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    ));
+        );
+      } else {
+        return (
+          <div key={res.id}>
+            <h4>No Results</h4>
+          </div>
+        );
+      }
+    });
     return (
       <div>
         <SearchBar

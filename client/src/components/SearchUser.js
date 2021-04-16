@@ -1,81 +1,43 @@
 import React, { Component } from "react";
 import SearchBar from "./SearchBar";
+import axios from "axios";
 
 class SearchUser extends Component {
   state = {
-    results: [
-      {
-        id: "1",
-        pop: "Bob Marley",
-        sock: "Full Stack Developer ETS TEAM ",
-        phone: "+1 (123) 894-4561",
-        email: "krosales@liveperson",
-        location: "USA, NC",
-        manager: "Kevin Rosales",
-        department: "IT",
-      },
-      {
-        id: "2",
-        pop: "Kevin Costner",
-        sock: "Junior Full Stack Developer",
-        phone: "+1 (123) 894-4561",
-        email: "test@liveperson",
-        location: "USA, GA",
-        manager: "Bob Sting",
-        department: "IT",
-      },
-      {
-        id: "3",
-        pop: "John Lopez",
-        sock: "Principal",
-        phone: "+1 (123) 894-4561",
-        email: "email@liveperson",
-        location: "USA, FL",
-        manager: "Legion of Doom",
-        department: "IT",
-      },
-      {
-        id: "4",
-        pop: "Jose Ortiz",
-        sock: "Solutions Engineer",
-        phone: "+1 (123) 894-4561",
-        email: "krosales@liveperson",
-        location: "USA, LA",
-        manager: "Avengers",
-        department: "IT",
-      },
-      {
-        id: "5",
-        pop: "Peter Parker",
-        sock: "Director of ETS Deployment",
-        phone: "+1 (123) 894-4561",
-        email: "krosales@liveperson",
-        location: "USA, CA",
-        manager: "LP",
-        department: "IT",
-      },
-    ],
+    results: [],
   };
 
-  onSearchSubmit = (term) => {
-    console.log("HIT!!!", term);
+  onSearchSubmit = async (term) => {
+    console.log("User Search Term: ", term);
+    const payload = {
+      searchterm: term,
+    };
+
+    const resp = await axios.post("/snow/searchUser", payload);
+    console.log(resp.data.result);
+    this.setState({ results: resp.data.result });
   };
+
   render() {
-    // DO A TABLE!!!!!
-
-    const resultList = this.state.results.map((res) => (
-      <tbody key={res.id}>
-        <tr>
-          <td>{res.pop}</td>
-          <td>{res.sock}</td>
-          <td>{res.department}</td>
-          <td>{res.manager}</td>
-          <td>{res.location}</td>
-          <td>{res.phone}</td>
-          <td>{res.email}</td>
-        </tr>
-      </tbody>
-    ));
+    const resultList = this.state.results.map((res) => {
+      if (res.length === 0) {
+        return <h4>No Results</h4>;
+      } else {
+        return (
+          <tbody key={res.sys_id}>
+            <tr>
+              <td>{res.name}</td>
+              <td>{res.title}</td>
+              <td>division Example{/* {res.u_division} */}</td>
+              <td>manager Example{/* {res.manager} */}</td>
+              <td>example Location{/* {res.location} */}</td>
+              <td>{res.mobile_phone}</td>
+              <td>{res.email}</td>
+            </tr>
+          </tbody>
+        );
+      }
+    });
     return (
       <div>
         <SearchBar onSubmit={this.onSearchSubmit} placeholder="Search User" />

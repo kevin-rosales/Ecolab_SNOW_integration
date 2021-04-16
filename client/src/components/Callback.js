@@ -4,7 +4,7 @@ class Callback extends Component {
   state = {
     authStatus: null,
   };
-  
+
   componentDidMount = () => {
     let params = this.props.location.search;
     console.log(params);
@@ -18,7 +18,7 @@ class Callback extends Component {
       });
     }
   };
-  
+
   render() {
     return (
       <div>
@@ -31,7 +31,14 @@ class Callback extends Component {
             below.
           </p>
           <p className="lead">
-            <button className="btn btn-primary">Close</button>
+            <button
+              onClick={() => {
+                window.close();
+              }}
+              className="btn btn-primary"
+            >
+              Close
+            </button>
           </p>
         </div>
       </div>
