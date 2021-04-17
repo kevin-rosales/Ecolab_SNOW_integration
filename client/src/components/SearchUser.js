@@ -19,25 +19,19 @@ class SearchUser extends Component {
   };
 
   render() {
-    const resultList = this.state.results.map((res) => {
-      if (res.length === 0) {
-        return <h4>No Results</h4>;
-      } else {
-        return (
-          <tbody key={res.sys_id}>
-            <tr>
-              <td>{res.name}</td>
-              <td>{res.title}</td>
-              <td>division Example{/* {res.u_division} */}</td>
-              <td>manager Example{/* {res.manager} */}</td>
-              <td>example Location{/* {res.location} */}</td>
-              <td>{res.mobile_phone}</td>
-              <td>{res.email}</td>
-            </tr>
-          </tbody>
-        );
-      }
-    });
+    const resultList = this.state.results.map((res) => (
+      <tbody key={res.sys_id}>
+        <tr>
+          <td>{res.name}</td>
+          <td>{res.title}</td>
+          <td>division Example{/* {res.u_division} */}</td>
+          <td>manager Example{/* {res.manager} */}</td>
+          <td>example Location{/* {res.location} */}</td>
+          <td>{res.mobile_phone}</td>
+          <td>{res.email}</td>
+        </tr>
+      </tbody>
+    ));
     return (
       <div>
         <SearchBar onSubmit={this.onSearchSubmit} placeholder="Search User" />

@@ -5,6 +5,7 @@ import SearchBar from "./SearchBar";
 class SearchIncident extends Component {
   state = {
     Incidents: [],
+    user: "",
   };
 
   onSearchSubmit = async (term) => {
@@ -13,16 +14,21 @@ class SearchIncident extends Component {
       searchterm: term,
     };
 
+    // grab incident from SNOW api endpoint from server
     const resp = await axios
       .post("/snow/searchIncident", payload)
       .catch((err) => {
         console.log("Search Incident Failed - ", err);
       });
 
-    if (resp == undefined) {
+    // If there is no data returned then add No Results to page as message
+    if (resp === undefined) {
       this.setState({ Incidents: [{ id: 1, Noresult: "No Results" }] });
     } else {
-      this.setState({ Incidents: resp.data.result });
+      this.setState({
+        Incidents: resp.data.ResponseData.result,
+        user: resp.data.user,
+      });
     }
   };
 
@@ -32,10 +38,10 @@ class SearchIncident extends Component {
         return (
           <div style={{ margin: "10px" }} key={res.number}>
             <div style={{ textAlign: "left" }} className="card">
+              <h5 className="card-header">{res.number}</h5>
               <div className="card-body">
-                <h5 className="card-title">{res.number}</h5>
                 <h6 className="card-subtitle mb-1 text-muted">
-                  User: {res.caller_id.value} | Created Date: {res.opened_at}{" "}
+                  User: {this.state.user} | Created Date: {res.opened_at}{" "}
                 </h6>
                 <br />
                 <p className="card-text">

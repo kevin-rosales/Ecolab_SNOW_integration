@@ -21,8 +21,8 @@ class SearchKnowledge extends Component {
     const resultList = this.state.articles.map((res) => (
       <div style={{ margin: "10px" }} key={res.id}>
         <div style={{ textAlign: "left" }} className="card">
+          <h5 className="card-header">{res.title}</h5>
           <div className="card-body">
-            <h5 className="card-title">{res.title}</h5>
             <h6 className="card-subtitle mb-1 text-muted">
               Number: {res.meta.number} | Knowledge Base:{" "}
               {res.meta.knowledgeBase} | Assignment Group:{" "}
@@ -31,7 +31,7 @@ class SearchKnowledge extends Component {
             <br />
             <p className="card-text">
               {" "}
-              <strong>Summary:</strong> {res.snippet}
+              <strong>Summary:</strong>  {res.snippet}
             </p>
           </div>
         </div>
