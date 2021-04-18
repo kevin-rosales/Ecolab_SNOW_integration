@@ -8,7 +8,13 @@ class SearchUser extends Component {
     division: "",
     location: "",
     manager: "",
+    phoneNum: null,
   };
+
+  componentDidMount() {
+    this.setState({ phoneNum: this.props.visitorName });
+    console.log("phoneNum", this.state.phoneNum);
+  }
 
   onSearchSubmit = async (term) => {
     console.log("User Search Term: ", term);
@@ -43,7 +49,11 @@ class SearchUser extends Component {
     ));
     return (
       <div>
-        <SearchBar onSubmit={this.onSearchSubmit} phoneNum={this.props.visitorName.phone} placeholder="Search User" />
+        <SearchBar
+          onSubmit={this.onSearchSubmit}
+          phoneNum={this.state.phoneNum}
+          placeholder="Search User"
+        />
         <div className="table-responsive">
           <table className="table table-bordered table-sm">
             <thead className="thead">
