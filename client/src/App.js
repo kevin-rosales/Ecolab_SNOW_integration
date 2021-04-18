@@ -20,12 +20,10 @@ class App extends Component {
   componentDidMount() {
     const win = window.location.pathname;
     console.log(win);
-
     const onSuccess = (data) => {
       console.log("onSuccess", data.newValue.visitorName);
-      const phone = "56115654646";
+      const phone = data.newValue.visitorName;
       this.setState({ visitorName: phone });
-      return;
     };
 
     const onError = (err) => {
@@ -42,7 +40,6 @@ class App extends Component {
       window.location.pathname !== "/callback" ? (
         <NavBar />
       ) : null;
-    console.log("STATE", this.state.visitorName);
     return (
       <div className="App">
         <Router>
