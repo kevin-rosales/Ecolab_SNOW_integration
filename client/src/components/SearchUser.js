@@ -43,7 +43,7 @@ class SearchUser extends Component {
     ));
     return (
       <div>
-        <SearchBar onSubmit={this.onSearchSubmit} placeholder="Search User" />
+        <SearchBar onSubmit={this.onSearchSubmit} phoneNum={this.props.visitorName.phone} placeholder="Search User" />
         <div className="table-responsive">
           <table className="table table-bordered table-sm">
             <thead className="thead">

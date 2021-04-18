@@ -11,6 +11,9 @@ import SingleUser from "./components/SingleUser";
 import NavBar from "./components/NavBar";
 
 class App extends Component {
+  state = {
+    visitorName: "",
+  };
   /*
   Added the Agent Workspace Widget SDK Functionality to grab data from the Agent workspace for SNOW Widget on the componentDidMount
   */
@@ -19,6 +22,8 @@ class App extends Component {
     console.log(win);
     const onSuccess = (data) => {
       console.log("onSuccess", data.newValue.visitorName);
+      const phone = data.newValue.visitorName;
+      this.setState({ visitorName: phone });
     };
 
     const onError = (err) => {
@@ -46,7 +51,7 @@ class App extends Component {
               <Route exact path="/incident" component={SearchIncident} />
               <Route exact path="/create" component={CreateIncident} />
               <Route exact path="/user/:id" component={SingleUser} />
-              <Route exact path="/user" component={SearchUser} />
+              <Route exact path="/user" visitorName={this.state.visitorName} component={SearchUser} />
               <Route path="/" component={LoginPage} />
             </Switch>
           </div>
