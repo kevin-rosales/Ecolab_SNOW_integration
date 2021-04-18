@@ -3,6 +3,8 @@ const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config();
 
+const { getData } = require("../../utils/DataRetrieval");
+
 const router = express.Router();
 
 //Grab env variables
@@ -83,11 +85,11 @@ router.post("/searchIncident", (req, res) => {
       */
       response.data.result.map(async (res) => {
         if (typeof res.caller_id == "object") {
-          // console.log("caller_id", res.caller_id);
-          const n = await findUserByCallerId(res.caller_id.value);
-          let userName = n;
+          const nam = await findUserByCallerId(res.caller_id.value);
+          let userName = nam;
           grabName(userName);
         }
+        return;
       });
 
       // The whole purpose of this function is to grab the user's name from the promise so that it can be sent over to the client side
@@ -183,7 +185,64 @@ router.post("/searchUser", (req, res) => {
 
   axios(config)
     .then((response) => {
-      res.send(response.data).end();
+      response.data.result.map(async (res) => {
+        if (
+          typeof res.u_division == "object" &&
+          typeof res.location == "object" &&
+          typeof res.manager == "object"
+        ) {
+          // console.log("YEAH!!", res);
+          const division = await grabDivision(res.u_division.link);
+
+          const locale = await grabLocation(res.location.link);
+
+          const manager = await grabManager(res.manager.link);
+
+          grabData(division, locale, manager);
+        } else {
+          let division;
+          let locale;
+          let manager;
+
+          // Validation to check to see if the data from api call has division  present or not, if not present return null
+          res.u_division === null ||
+          res.u_division === undefined ||
+          res.u_division === ""
+            ? (division = null)
+            : (division = await grabDivision(res.u_division.link));
+
+          // Validation to check to see if the data from api call has location  present or not, if not present return null
+          res.location === null ||
+          res.location === undefined ||
+          res.location === ""
+            ? (locale = null)
+            : (locale = await grabLocation(res.location.link));
+
+          // Validation to check to see if the data from api call has manager  present or not, if not present return null
+          res.manager === null ||
+          res.manager === undefined ||
+          res.manager === ""
+            ? (manager = null)
+            : (manager = await grabManager(res.manager.link));
+
+          grabData(division, locale, manager);
+        }
+      });
+
+      // This function simply just grabs the data from the mapping of the results array that gets returned from the axios api call
+      const grabData = (division, location, manager) => {
+        console.log(division);
+        console.log(location);
+        console.log(manager);
+        res
+          .send({
+            ResponseData: response.data,
+            division: division,
+            location: location,
+            manager: manager,
+          })
+          .end();
+      };
     })
     .catch((error) => {
       console.log(error.message);
@@ -192,5 +251,47 @@ router.post("/searchUser", (req, res) => {
         .send({ errMessage: "Access Denied", resError: error.message });
     });
 });
+
+// Function used to grab the Division of Users
+const grabDivision = async (divLink) => {
+  // external function (getData) from the utils folder to grab data from endpoints so that it can be manipulated
+  const returnedData = await getData(divLink);
+
+  const divisionData = returnedData.result;
+  const division = divisionData.u_name;
+
+  if (division == undefined || division == null) {
+    return null;
+  }
+  return division;
+};
+
+// Function used to grab the Location of Users
+const grabLocation = async (locaLink) => {
+  // external function (getData) from the utils folder to grab data from endpoints so that it can be manipulated
+  const returnedData = await getData(locaLink);
+
+  const locationData = returnedData.result;
+  const location = locationData.full_name;
+
+  if (location == undefined || location == null) {
+    return null;
+  }
+  return location;
+};
+
+// Function used to grab the Manager of Users
+const grabManager = async (manLink) => {
+  // external function (getData) from the utils folder to grab data from endpoints so that it can be manipulated
+  const returnedData = await getData(manLink);
+
+  const managerData = returnedData.result;
+  const manager = managerData.name;
+
+  if (manager == undefined || manager == null) {
+    return null;
+  }
+  return manager;
+};
 
 module.exports = router;

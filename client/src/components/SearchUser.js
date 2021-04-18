@@ -5,6 +5,9 @@ import axios from "axios";
 class SearchUser extends Component {
   state = {
     results: [],
+    division: "",
+    location: "",
+    manager: "",
   };
 
   onSearchSubmit = async (term) => {
@@ -14,8 +17,14 @@ class SearchUser extends Component {
     };
 
     const resp = await axios.post("/snow/searchUser", payload);
-    console.log(resp.data.result);
-    this.setState({ results: resp.data.result });
+    console.log("ResponseData", resp.data.ResponseData.result);
+    console.log("ResponseData", resp.data);
+    this.setState({
+      results: resp.data.ResponseData.result,
+      division: resp.data.division,
+      location: resp.data.location,
+      manager: resp.data.manager,
+    });
   };
 
   render() {
@@ -24,9 +33,9 @@ class SearchUser extends Component {
         <tr>
           <td>{res.name}</td>
           <td>{res.title}</td>
-          <td>division Example{/* {res.u_division} */}</td>
-          <td>manager Example{/* {res.manager} */}</td>
-          <td>example Location{/* {res.location} */}</td>
+          <td>{this.state.division}</td>
+          <td>{this.state.manager}</td>
+          <td>{this.state.location}</td>
           <td>{res.mobile_phone}</td>
           <td>{res.email}</td>
         </tr>
