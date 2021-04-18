@@ -24,6 +24,7 @@ class App extends Component {
       console.log("onSuccess", data.newValue.visitorName);
       const phone = data.newValue.visitorName;
       this.setState({ visitorName: phone });
+      console.log("STATE", this.state.visitorName)
     };
 
     const onError = (err) => {
