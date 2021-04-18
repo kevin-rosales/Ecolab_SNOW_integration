@@ -8,7 +8,7 @@ class SearchUser extends Component {
     division: "",
     location: "",
     manager: "",
-    phoneNum: null,
+    phoneNum: '',
   };
 
   componentDidMount() {
