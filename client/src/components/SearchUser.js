@@ -12,8 +12,8 @@ class SearchUser extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props)
     this.setState({ phoneNum: this.props.visitorName });
+    console.log(this.props)
     console.log("phoneNum", this.state.phoneNum);
   }
 
