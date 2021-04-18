@@ -18,7 +18,7 @@ class App extends Component {
     const win = window.location.pathname;
     console.log(win);
     const onSuccess = (data) => {
-      console.log("onSuccess", data.visitorName);
+      console.log("onSuccess", data.newValue.visitorName);
     };
 
     const onError = (err) => {
