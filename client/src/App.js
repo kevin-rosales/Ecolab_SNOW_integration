@@ -51,7 +51,13 @@ class App extends Component {
               <Route exact path="/incident" component={SearchIncident} />
               <Route exact path="/create" component={CreateIncident} />
               <Route exact path="/user/:id" component={SingleUser} />
-              <Route exact path="/user" visitorName={this.state.visitorName} component={SearchUser} />
+              <Route
+                exact
+                path="/user"
+                render={(props) => (
+                  <SearchUser {...props} visitorName={this.state.visitorName} />
+                )}
+              />
               <Route path="/" component={LoginPage} />
             </Switch>
           </div>
