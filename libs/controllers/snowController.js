@@ -24,12 +24,7 @@ router.post("/incident", (req, res) => {
     assignment_group: req.body.assignment_group,
     description: req.body.description,
   };
-  // Kevin Rosales (20340701)
-  // Software
-  // Email
-  // 4
-  // Testing Create Incident for SNOW Integration
-  // BTS Application Support
+
   // LP SNOW TEST
   const config = {
     method: "post",
@@ -44,11 +39,10 @@ router.post("/incident", (req, res) => {
 
   axios(config)
     .then((response) => {
-      console.log(response.data);
-      res.sendStatus(200).end();
+      res.status(200).send({ responseData: response.data }).end();
     })
     .catch((error) => {
-      console.log(error.message);
+      console.log("Incident Creation Falure: ", error.message);
       res
         .status(401)
         .send({ errMessage: "Access Denied", resError: error.message });
@@ -154,8 +148,34 @@ router.post("/searchKnowledge", (req, res) => {
   };
 
   axios(config)
-    .then((response) => {
-      res.send(response.data);
+    .then(async (response) => {
+      // console.log(response.data.result.results);
+
+      let articles = response.data.result.results;
+
+      const ids = articles.map((item) => {
+        return item.id.split(":")[1];
+      });
+
+      const kbData = [];
+
+      for (let idx = 0; idx < ids.length; idx++) {
+        let id = ids[idx];
+
+        const singleArticle = await getKnowledge(id);
+        console.log(singleArticle.data.result.number);
+
+        let kbItem = articles.find((kbEntry) => kbEntry.id.split(":")[1] == id);
+
+        const kbReturned = {
+          ResponseData: kbItem,
+          ownershipGroup: singleArticle.data.result.number,
+        };
+
+        kbData.push(kbReturned);
+      }
+
+      res.send({ returnedData: kbData });
     })
     .catch((error) => {
       console.log(error.message);
@@ -164,6 +184,27 @@ router.post("/searchKnowledge", (req, res) => {
         .send({ errMessage: "Access Denied", resError: error.message });
     });
 });
+
+// Function used to grab more data from specific knowledge articles
+const getKnowledge = (id) => {
+  let reqURL = `${snowDomain}/api/now/table/kb_knowledge/${id}`;
+
+  let config = {
+    method: "get",
+    url: reqURL,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: process.env.BASIC_AUTH,
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    const getKnowledge = axios(config);
+
+    resolve(getKnowledge);
+  });
+};
 
 //Search User Endpoint
 router.post("/searchUser", (req, res) => {

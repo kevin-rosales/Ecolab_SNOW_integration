@@ -14,12 +14,14 @@ class App extends Component {
   state = {
     visitorName: "",
   };
+
   /*
   Added the Agent Workspace Widget SDK Functionality to grab data from the Agent workspace for SNOW Widget on the componentDidMount
   */
   componentDidMount() {
     const win = window.location.pathname;
     console.log(win);
+    
     const onSuccess = (data) => {
       console.log("onSuccess", data.newValue.visitorName);
       const phone = data.newValue.visitorName;

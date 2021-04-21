@@ -4,6 +4,7 @@ import axios from "axios";
 class SearchKnowledge extends Component {
   state = {
     articles: [],
+    ownershipGroup: "",
   };
 
   onSearchSubmit = async (term) => {
@@ -13,30 +14,42 @@ class SearchKnowledge extends Component {
     };
 
     const resp = await axios.post("/snow/searchKnowledge", payload);
-    console.log(resp.data.result.results);
-    this.setState({ articles: resp.data.result.results });
+    console.log("DATA!!", resp.data.returnedData);
+    const returnedData = resp.data.returnedData;
+
+    let results = [];
+
+    returnedData.forEach((obj) => {
+      obj.ResponseData["ownershipGroup"] = obj.ownershipGroup;
+      results.push(obj.ResponseData);
+    });
+
+    this.setState({
+      articles: results,
+    });
   };
 
   render() {
-    const resultList = this.state.articles.map((res) => (
-      <div style={{ margin: "10px" }} key={res.id}>
-        <div style={{ textAlign: "left" }} className="card">
-          <h5 className="card-header">{res.title}</h5>
-          <div className="card-body">
-            <h6 className="card-subtitle mb-1 text-muted">
-              Number: {res.meta.number} | Knowledge Base:{" "}
-              {res.meta.knowledgeBase} | Assignment Group:{" "}
-              {res.meta.assignmentGroup}{" "}
-            </h6>
-            <br />
-            <p className="card-text">
-              {" "}
-              <strong>Summary:</strong>  {res.snippet}
-            </p>
+    const resultList = this.state.articles.map((res) => {
+      return (
+        <div style={{ margin: "10px" }} key={res.id}>
+          <div style={{ textAlign: "left" }} className="card">
+            <h5 className="card-header">{res.title}</h5>
+            <div className="card-body">
+              <h6 className="card-subtitle mb-1 text-muted">
+                Number: {res.meta.number} | Knowledge Base:{" "}
+                {res.meta.knowledgeBase} | Ownership Group: {res.ownershipGroup}{" "}
+              </h6>
+              <br />
+              <p className="card-text">
+                {" "}
+                <strong>Summary:</strong> {res.snippet}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    ));
+      );
+    });
     return (
       <div>
         <SearchBar

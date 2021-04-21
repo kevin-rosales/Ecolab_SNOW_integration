@@ -13,6 +13,9 @@ class CreateIncident extends Component {
       assignment_group: "",
       description: "",
     },
+    boostrapMsg: null,
+    errBlock: null,
+    resultMsg: null,
   };
 
   handleChange = (e) => {
@@ -23,28 +26,55 @@ class CreateIncident extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state.incident);
     const payload = {
-      caller_id: this.state.caller_id,
-      category: this.state.category,
-      subcategory: this.state.subcategory,
-      priority: this.state.priority,
-      short_description: this.state.short_description,
-      assigned_to: this.state.assigned_to,
-      assignment_group: this.state.assignment_group,
-      description: this.state.description,
+      caller_id: this.state.incident.caller_id,
+      category: this.state.incident.category,
+      subcategory: this.state.incident.subcategory,
+      priority: this.state.incident.priority,
+      short_description: this.state.incident.short_description,
+      assigned_to: this.state.incident.assigned_to,
+      assignment_group: this.state.incident.assignment_group,
+      description: this.state.incident.description,
     };
 
-    axios.post("/snow/incident", payload).then((res) => {
-      console.log(res);
-      this.props.history.push("/incident");
-    });
+    axios
+      .post("/snow/incident", payload)
+      .then((res) => {
+        const incidentNumber = res.data.responseData.result.number;
+        this.setState({
+          resultMsg: `Incident Created Successfully - Incident Number: ${incidentNumber}`,
+          boostrapMsg: "alert alert-success alert-dismissible fade show",
+          errBlock: false,
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
+        this.setState({
+          resultMsg: `Incident Creation Failed`,
+          boostrapMsg: "alert alert-danger alert-dismissible fade show",
+          errBlock: true,
+        });
+      });
   };
 
   render() {
     return (
       <div>
         <h1>Create Incident</h1>
+        {this.state.errBlock !== null ? (
+          <div className={this.state.boostrapMsg} role="alert">
+            {this.state.resultMsg}
+            <button
+              type="button"
+              className="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        ) : null}
+
         <form onSubmit={this.handleSubmit}>
           <div className="form-group row">
             <label className="col-sm-4 col-form-label" htmlFor="caller_id">
@@ -61,12 +91,6 @@ class CreateIncident extends Component {
             <label className="col-sm-4 col-form-label" htmlFor="category">
               Category
             </label>
-            {/* <input
-              onChange={this.handleChange}
-              value={this.state.incident.category}
-              type="text"
-              name="category"
-            /> */}
             <select
               onChange={this.handleChange}
               value={this.state.incident.category}
@@ -89,12 +113,6 @@ class CreateIncident extends Component {
             <label className="col-sm-4 col-form-label" htmlFor="subcategory">
               SubCategory
             </label>
-            {/* <input
-              onChange={this.handleChange}
-              value={this.state.incident.subcategory}
-              type="text"
-              name="subcategory"
-            /> */}
             <select
               onChange={this.handleChange}
               value={this.state.incident.subcategory}
