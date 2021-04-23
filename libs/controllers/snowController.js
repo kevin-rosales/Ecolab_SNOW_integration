@@ -2,13 +2,47 @@ const express = require("express");
 const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config();
-
+const qs = require("querystring");
 const { getData } = require("../../utils/DataRetrieval");
 
 const router = express.Router();
 
 //Grab env variables
 const snowDomain = process.env.INSTANCE_DOMAIN;
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
+
+router.post("/auth", async (req, res) => {
+  // console.log(req.body.authCode);
+
+  const authURL = "https://ecolabqa.service-now.com/oauth_token.do";
+  let AuthCode = req.body.authCode;
+
+  const authRequest = qs.stringify({
+    code: AuthCode,
+    grant_type: "authorization_code",
+    client_id: client_id,
+    client_secret: client_secret,
+    redirect_uri: "https://quiet-everglades-59480.herokuapp.com/callback",
+  });
+
+  const config = {
+    method: "post",
+    url: authURL,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    data: authRequest,
+  };
+
+  const result = await axios(config).catch((err) => {
+    console.log("Auth Request Error ", err.message);
+  });
+
+  let { access_token } = result.data;
+
+  res.send({ access_token: access_token });
+});
 
 // create Incident Endpoint
 router.post("/incident", (req, res) => {
