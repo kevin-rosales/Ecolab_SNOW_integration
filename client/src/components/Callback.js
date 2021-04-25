@@ -27,10 +27,10 @@ class Callback extends Component {
       // console.log(resp.data)
       let { access_token } = resp.data;
       console.log(access_token);
-      sessionStorage.clear();
-      sessionStorage.setItem("token", access_token);
+      localStorage.clear();
+      localStorage.setItem("token", access_token);
 
-      let token = sessionStorage.getItem("token");
+      let token = localStorage.getItem("token");
       console.log(token);
 
       if (token !== null || token !== undefined) {

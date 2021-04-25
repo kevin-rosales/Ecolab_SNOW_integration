@@ -38,7 +38,7 @@ router.post("/auth", async (req, res) => {
   const result = await axios(config).catch((err) => {
     console.log("Auth Request Error ", err.message);
   });
-
+  
   let { access_token } = result.data;
 
   res.send({ access_token: access_token });
