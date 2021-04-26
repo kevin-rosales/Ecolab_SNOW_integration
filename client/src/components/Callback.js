@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import * as localStorageService from "./LocalStorageService";
 
 class Callback extends Component {
   state = {
@@ -7,6 +8,7 @@ class Callback extends Component {
   };
 
   componentDidMount = async () => {
+
     let params = this.props.location.search;
     console.log(params);
 
@@ -24,20 +26,18 @@ class Callback extends Component {
       };
 
       const resp = await axios.post("/snow/auth", payload);
-      // console.log(resp.data)
-      let { access_token } = resp.data;
-      console.log(access_token);
-      localStorage.clear();
-      localStorage.setItem("token", access_token);
+      console.log(resp.data);
 
-      let token = localStorage.getItem("token");
-      console.log(token);
+      localStorageService.setToken(resp.data);
+      const tokens = localStorageService.getAccessToken();
 
-      if (token !== null || token !== undefined) {
-        this.setState({
-          authStatus: "Login Successful !",
-        });
-      }
+      console.log(tokens);
+
+      // if (tokens !== null || tokens !== undefined) {
+      //   this.setState({
+      //     authStatus: "Login Successful !",
+      //   });
+      // }
     }
   };
 

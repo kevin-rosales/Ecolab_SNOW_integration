@@ -40,10 +40,42 @@ router.post("/auth", async (req, res) => {
     console.log("Auth Request Error ", err.message);
   });
   console.log(result.data);
-  let { access_token } = result.data;
 
-  res.send({ access_token: access_token });
+  const { access_token, refresh_token } = result.data;
+
+  res.send({ access_token, refresh_token });
 });
+
+router.post(
+  ("/refresh",
+  async (req, res) => {
+    const authURL = "https://ecolabqa.service-now.com/oauth_token.do";
+
+    const authRequest = qs.stringify({
+      refresh_token: refresh_token,
+      grant_type: "refresh_token",
+      client_id: client_id,
+      client_secret: client_secret,
+      redirect_uri: "https://quiet-everglades-59480.herokuapp.com/callback",
+    });
+
+    const config = {
+      method: "post",
+      url: authURL,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: authRequest,
+    };
+
+    const result = await axios(config).catch((err) => {
+      console.log("Auth Request Error ", err.message);
+    });
+    console.log(result.data);
+
+    // res.send({ access_token: access_token });
+  })
+);
 
 // create Incident Endpoint
 router.post("/incident", (req, res) => {
@@ -246,6 +278,7 @@ router.post("/searchUser", (req, res) => {
   let reqURL = `${snowDomain}/api/now/table/sys_user`;
   let searchValue = req.body.searchterm;
   let token = req.body.token;
+  console.log(req);
 
   let config = {
     method: "get",
