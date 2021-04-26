@@ -11,6 +11,7 @@ const router = express.Router();
 const snowDomain = process.env.INSTANCE_DOMAIN;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
+// let accessToken = "bvkQDpxjq7RtLJV2AEXIab9_SRMsG3ImIa7Kk5ZZJasKR1h9XGJyCkFL0FOQLyjtALj0zTlIF80g0ktqMJi7Ag";
 
 router.post("/auth", async (req, res) => {
   // console.log(req.body.authCode);
@@ -38,7 +39,7 @@ router.post("/auth", async (req, res) => {
   const result = await axios(config).catch((err) => {
     console.log("Auth Request Error ", err.message);
   });
-  
+  console.log(result.data);
   let { access_token } = result.data;
 
   res.send({ access_token: access_token });
@@ -244,6 +245,7 @@ const getKnowledge = (id) => {
 router.post("/searchUser", (req, res) => {
   let reqURL = `${snowDomain}/api/now/table/sys_user`;
   let searchValue = req.body.searchterm;
+  let token = req.body.token;
 
   let config = {
     method: "get",
@@ -254,7 +256,7 @@ router.post("/searchUser", (req, res) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.BASIC_AUTH,
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -306,9 +308,6 @@ router.post("/searchUser", (req, res) => {
 
       // This function simply just grabs the data from the mapping of the results array that gets returned from the axios api call
       const grabData = (division, location, manager) => {
-        console.log(division);
-        console.log(location);
-        console.log(manager);
         res
           .send({
             ResponseData: response.data,

@@ -18,9 +18,11 @@ class SearchUser extends Component {
   }
 
   onSearchSubmit = async (term) => {
+    let token = localStorage.getItem("token");
     console.log("User Search Term: ", term);
     const payload = {
       searchterm: term,
+      token: token
     };
 
     const resp = await axios.post("/snow/searchUser", payload);

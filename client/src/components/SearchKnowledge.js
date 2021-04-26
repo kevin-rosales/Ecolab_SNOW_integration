@@ -8,9 +8,11 @@ class SearchKnowledge extends Component {
   };
 
   onSearchSubmit = async (term) => {
+    let token = localStorage.getItem("token");
     console.log("Knowledge Search Term: ", term);
     const payload = {
       searchterm: term,
+      token: token
     };
 
     const resp = await axios.post("/snow/searchKnowledge", payload);

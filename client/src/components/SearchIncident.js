@@ -9,9 +9,11 @@ class SearchIncident extends Component {
   };
 
   onSearchSubmit = async (term) => {
+    let token = localStorage.getItem("token");
     console.log("Incident Search Term: ", term);
     const payload = {
       searchterm: term,
+      token: token,
     };
 
     // grab incident from SNOW api endpoint from server

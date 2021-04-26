@@ -26,6 +26,7 @@ class CreateIncident extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    let token = localStorage.getItem("token");
     const payload = {
       caller_id: this.state.incident.caller_id,
       category: this.state.incident.category,
@@ -35,6 +36,7 @@ class CreateIncident extends Component {
       assigned_to: this.state.incident.assigned_to,
       assignment_group: this.state.incident.assignment_group,
       description: this.state.incident.description,
+      token: token
     };
 
     axios
