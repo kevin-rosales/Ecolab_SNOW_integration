@@ -277,8 +277,8 @@ const getKnowledge = (id) => {
 router.post("/searchUser", (req, res) => {
   let reqURL = `${snowDomain}/api/now/table/sys_user`;
   let searchValue = req.body.searchterm;
-  let token = req.body.token;
-  console.log(req);
+  let {authorization} = req.headers
+  console.log(authorization);
 
   let config = {
     method: "get",
@@ -289,10 +289,10 @@ router.post("/searchUser", (req, res) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: authorization,
     },
   };
-
+  console.log(config);
   axios(config)
     .then((response) => {
       response.data.result.map(async (res) => {
