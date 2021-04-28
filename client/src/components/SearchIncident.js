@@ -9,28 +9,30 @@ class SearchIncident extends Component {
   };
 
   onSearchSubmit = async (term) => {
-    let token = localStorage.getItem("token");
     console.log("Incident Search Term: ", term);
-    const payload = {
-      searchterm: term,
-      token: token,
-    };
-
-    // grab incident from SNOW api endpoint from server
-    const resp = await axios
-      .post("/snow/searchIncident", payload)
-      .catch((err) => {
-        console.log("Search Incident Failed - ", err);
-      });
-
-    // If there is no data returned then add No Results to page as message
-    if (resp === undefined) {
-      this.setState({ Incidents: [{ id: 1, Noresult: "No Results" }] });
+    if (term === "") {
+      this.setState({ enterTerm: "Please enter a search term" });
     } else {
-      this.setState({
-        Incidents: resp.data.ResponseData.result,
-        user: resp.data.user,
-      });
+      const payload = {
+        searchterm: term,
+      };
+
+      // grab incident from SNOW api endpoint from server
+      const resp = await axios
+        .post("/snow/searchIncident", payload)
+        .catch((err) => {
+          console.log("Search Incident Failed - ", err);
+        });
+
+      // If there is no data returned then add No Results to page as message
+      if (resp === undefined) {
+        this.setState({ Incidents: [{ id: 1, Noresult: "No Results" }] });
+      } else {
+        this.setState({
+          Incidents: resp.data.ResponseData.result,
+          user: resp.data.user,
+        });
+      }
     }
   };
 
@@ -69,6 +71,7 @@ class SearchIncident extends Component {
           placeholder="Search Incident"
         />
         {resultList}
+        {this.state.enterTerm}
       </div>
     );
   }

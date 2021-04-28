@@ -11,15 +11,17 @@ class Callback extends Component {
 
     let params = this.props.location.search;
     console.log(params);
+    
+    const tokens = localStorageService.getAccessToken();
 
-    if (params.indexOf("code") <= 0) {
+    if (!tokens || params.indexOf("code") <= 0 ) {
       this.setState({
         authStatus: "Login Failed!",
       });
     } else {
       const splitParam = params.split("=", 2);
       const auth_code = splitParam[1].split("&");
-      // console.log(auth_code[0]);
+      console.log(auth_code[0]);
 
       let payload = {
         authCode: auth_code[0],
@@ -29,15 +31,15 @@ class Callback extends Component {
       console.log(resp.data);
 
       localStorageService.setToken(resp.data);
-      const tokens = localStorageService.getAccessToken();
+     
 
       console.log(tokens);
 
-      // if (tokens !== null || tokens !== undefined) {
-      //   this.setState({
-      //     authStatus: "Login Successful !",
-      //   });
-      // }
+      if (tokens !== null || tokens !== undefined) {
+        this.setState({
+          authStatus: "Login Successful !",
+        });
+      }
     }
   };
 

@@ -8,27 +8,30 @@ class SearchKnowledge extends Component {
   };
 
   onSearchSubmit = async (term) => {
-    let token = localStorage.getItem("token");
     console.log("Knowledge Search Term: ", term);
-    const payload = {
-      searchterm: term,
-      token: token
-    };
+    if (term === "") {
+      this.setState({ enterTerm: "Please enter a search term" });
+    } else {
+      this.setState({ enterTerm: "" });
+      const payload = {
+        searchterm: term,
+      };
 
-    const resp = await axios.post("/snow/searchKnowledge", payload);
-    console.log("DATA!!", resp.data.returnedData);
-    const returnedData = resp.data.returnedData;
+      const resp = await axios.post("/snow/searchKnowledge", payload);
+      console.log("DATA!!", resp.data.returnedData);
+      const returnedData = resp.data.returnedData;
 
-    let results = [];
+      let results = [];
 
-    returnedData.forEach((obj) => {
-      obj.ResponseData["ownershipGroup"] = obj.ownershipGroup;
-      results.push(obj.ResponseData);
-    });
+      returnedData.forEach((obj) => {
+        obj.ResponseData["ownershipGroup"] = obj.ownershipGroup;
+        results.push(obj.ResponseData);
+      });
 
-    this.setState({
-      articles: results,
-    });
+      this.setState({
+        articles: results,
+      });
+    }
   };
 
   render() {
@@ -59,6 +62,7 @@ class SearchKnowledge extends Component {
           placeholder="Search Knowledge"
         />
         {resultList}
+        {this.state.enterTerm}
       </div>
     );
   }

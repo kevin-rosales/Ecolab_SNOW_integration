@@ -46,40 +46,44 @@ router.post("/auth", async (req, res) => {
   res.send({ access_token, refresh_token });
 });
 
-router.post(
-  ("/refresh",
-  async (req, res) => {
-    const authURL = "https://ecolabqa.service-now.com/oauth_token.do";
+// Endpoint used to grab the refreshtoken and get a new access token for agent
+router.post("/refresh", async (req, res) => {
+  const authURL = "https://ecolabqa.service-now.com/oauth_token.do";
 
-    const authRequest = qs.stringify({
-      refresh_token: refresh_token,
-      grant_type: "refresh_token",
-      client_id: client_id,
-      client_secret: client_secret,
-      redirect_uri: "https://quiet-everglades-59480.herokuapp.com/callback",
-    });
+  const { refresh_token } = req.body;
 
-    const config = {
-      method: "post",
-      url: authURL,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      data: authRequest,
-    };
+  const authRequest = qs.stringify({
+    refresh_token: refresh_token,
+    grant_type: "refresh_token",
+    client_id: client_id,
+    client_secret: client_secret,
+    redirect_uri: "https://quiet-everglades-59480.herokuapp.com/callback",
+  });
 
-    const result = await axios(config).catch((err) => {
-      console.log("Auth Request Error ", err.message);
-    });
-    console.log(result.data);
+  const config = {
+    method: "post",
+    url: authURL,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    data: authRequest,
+  };
 
-    // res.send({ access_token: access_token });
-  })
-);
+  const result = await axios(config).catch((err) => {
+    console.log("Auth Request Error ", err.message);
+  });
+
+  let { access_token } = result.data;
+  let refreshToken = result.data.refresh_token;
+
+  res.send({ access_token: access_token, refresh_token: refreshToken });
+});
 
 // create Incident Endpoint
 router.post("/incident", (req, res) => {
   let reqURL = `${snowDomain}/api/now/v1/table/incident`;
+
+  const { authorization } = req.headers;
 
   const incidentBody = {
     caller_id: req.body.caller_id,
@@ -99,7 +103,7 @@ router.post("/incident", (req, res) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.BASIC_AUTH,
+      Authorization: authorization,
     },
     data: incidentBody,
   };
@@ -121,6 +125,8 @@ router.post("/searchIncident", (req, res) => {
   let reqURL = `${snowDomain}/api/now/v1/table/incident`;
   let incidentNum = req.body.searchterm;
 
+  const { authorization } = req.headers;
+
   let config = {
     method: "get",
     url: reqURL,
@@ -130,7 +136,7 @@ router.post("/searchIncident", (req, res) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.BASIC_AUTH,
+      Authorization: authorization,
     },
   };
 
@@ -146,7 +152,10 @@ router.post("/searchIncident", (req, res) => {
       */
       response.data.result.map(async (res) => {
         if (typeof res.caller_id == "object") {
-          const nam = await findUserByCallerId(res.caller_id.value);
+          const nam = await findUserByCallerId(
+            res.caller_id.value,
+            authorization
+          );
           let userName = nam;
           grabName(userName);
         }
@@ -161,15 +170,15 @@ router.post("/searchIncident", (req, res) => {
       };
     })
     .catch((error) => {
-      console.log(error.message);
+      console.log("Error at Search Incident Endpoint: ", error.message);
       res
-        .status(401)
+        .status(error.response.status)
         .send({ errMessage: "Access Denied", resError: error.message });
     });
 });
 
 // Function that gets used to make another api call to the SNOW user table with the caller id's sys id to grab the user's full name
-const findUserByCallerId = async (value) => {
+const findUserByCallerId = async (value, authorization) => {
   let reqURL = `${snowDomain}/api/now/table/sys_user`;
   let sysId = value;
   let name;
@@ -183,7 +192,7 @@ const findUserByCallerId = async (value) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.BASIC_AUTH,
+      Authorization: authorization,
     },
   };
 
@@ -198,6 +207,7 @@ const findUserByCallerId = async (value) => {
 //Search Knowledge Endpoint
 router.post("/searchKnowledge", (req, res) => {
   let reqURL = `${snowDomain}/api/now/cxs/search`;
+  const { authorization } = req.headers;
 
   let searchQuery = req.body.searchterm;
 
@@ -206,11 +216,12 @@ router.post("/searchKnowledge", (req, res) => {
     url: reqURL,
     params: {
       q: searchQuery,
+      num: "30",
     },
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.BASIC_AUTH,
+      Authorization: authorization,
     },
   };
 
@@ -226,23 +237,37 @@ router.post("/searchKnowledge", (req, res) => {
 
       const kbData = [];
 
+      const promises = [];
+
       for (let idx = 0; idx < ids.length; idx++) {
         let id = ids[idx];
 
-        const singleArticle = await getKnowledge(id);
-        console.log(singleArticle.data.result.number);
-
-        let kbItem = articles.find((kbEntry) => kbEntry.id.split(":")[1] == id);
-
-        const kbReturned = {
-          ResponseData: kbItem,
-          ownershipGroup: singleArticle.data.result.number,
-        };
-
-        kbData.push(kbReturned);
+        promises.push(getKnowledge(id, authorization));
       }
 
-      res.send({ returnedData: kbData });
+      Promise.all(promises)
+        .then((values) => {
+          values.forEach((item) => {
+            const { sys_id, number } = item.data.result;
+
+            let kbItem = articles.find(
+              (kbEntry) => kbEntry.id.split(":")[1] == sys_id
+            );
+
+            const kbReturned = {
+              ResponseData: kbItem,
+              ownershipGroup: number,
+            };
+
+            kbData.push(kbReturned);
+          });
+
+          res.send({ returnedData: kbData });
+        })
+        .catch((err) => {
+          console.log(err.message);
+          res.status(500).send({ resError: err.message });
+        });
     })
     .catch((error) => {
       console.log(error.message);
@@ -253,7 +278,7 @@ router.post("/searchKnowledge", (req, res) => {
 });
 
 // Function used to grab more data from specific knowledge articles
-const getKnowledge = (id) => {
+const getKnowledge = (id, authorization) => {
   let reqURL = `${snowDomain}/api/now/table/kb_knowledge/${id}`;
 
   let config = {
@@ -262,7 +287,7 @@ const getKnowledge = (id) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.BASIC_AUTH,
+      Authorization: authorization,
     },
   };
 
@@ -275,12 +300,12 @@ const getKnowledge = (id) => {
 
 //Search User Endpoint
 router.post("/searchUser", (req, res) => {
-  let reqURL = `${snowDomain}/api/now/table/sys_user`;
-  let searchValue = req.body.searchterm;
-  let {authorization} = req.headers
+  const reqURL = `${snowDomain}/api/now/table/sys_user`;
+  const searchValue = req.body.searchterm;
+  const { authorization } = req.headers;
   console.log(authorization);
 
-  let config = {
+  const config = {
     method: "get",
     url: reqURL,
     params: {
@@ -292,7 +317,7 @@ router.post("/searchUser", (req, res) => {
       Authorization: authorization,
     },
   };
-  console.log(config);
+
   axios(config)
     .then((response) => {
       response.data.result.map(async (res) => {
@@ -302,11 +327,14 @@ router.post("/searchUser", (req, res) => {
           typeof res.manager == "object"
         ) {
           // console.log("YEAH!!", res);
-          const division = await grabDivision(res.u_division.link);
+          const division = await grabDivision(
+            res.u_division.link,
+            authorization
+          );
 
-          const locale = await grabLocation(res.location.link);
+          const locale = await grabLocation(res.location.link, authorization);
 
-          const manager = await grabManager(res.manager.link);
+          const manager = await grabManager(res.manager.link, authorization);
 
           grabData(division, locale, manager);
         } else {
@@ -319,21 +347,24 @@ router.post("/searchUser", (req, res) => {
           res.u_division === undefined ||
           res.u_division === ""
             ? (division = null)
-            : (division = await grabDivision(res.u_division.link));
+            : (division = await grabDivision(
+                res.u_division.link,
+                authorization
+              ));
 
           // Validation to check to see if the data from api call has location  present or not, if not present return null
           res.location === null ||
           res.location === undefined ||
           res.location === ""
             ? (locale = null)
-            : (locale = await grabLocation(res.location.link));
+            : (locale = await grabLocation(res.location.link, authorization));
 
           // Validation to check to see if the data from api call has manager  present or not, if not present return null
           res.manager === null ||
           res.manager === undefined ||
           res.manager === ""
             ? (manager = null)
-            : (manager = await grabManager(res.manager.link));
+            : (manager = await grabManager(res.manager.link, authorization));
 
           grabData(division, locale, manager);
         }
@@ -360,9 +391,9 @@ router.post("/searchUser", (req, res) => {
 });
 
 // Function used to grab the Division of Users
-const grabDivision = async (divLink) => {
+const grabDivision = async (divLink, authorization) => {
   // external function (getData) from the utils folder to grab data from endpoints so that it can be manipulated
-  const returnedData = await getData(divLink);
+  const returnedData = await getData(divLink, authorization);
 
   const divisionData = returnedData.result;
   const division = divisionData.u_name;
@@ -374,9 +405,9 @@ const grabDivision = async (divLink) => {
 };
 
 // Function used to grab the Location of Users
-const grabLocation = async (locaLink) => {
+const grabLocation = async (locaLink, authorization) => {
   // external function (getData) from the utils folder to grab data from endpoints so that it can be manipulated
-  const returnedData = await getData(locaLink);
+  const returnedData = await getData(locaLink, authorization);
 
   const locationData = returnedData.result;
   const location = locationData.full_name;
@@ -388,9 +419,9 @@ const grabLocation = async (locaLink) => {
 };
 
 // Function used to grab the Manager of Users
-const grabManager = async (manLink) => {
+const grabManager = async (manLink, authorization) => {
   // external function (getData) from the utils folder to grab data from endpoints so that it can be manipulated
-  const returnedData = await getData(manLink);
+  const returnedData = await getData(manLink, authorization);
 
   const managerData = returnedData.result;
   const manager = managerData.name;

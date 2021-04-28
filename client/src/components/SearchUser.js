@@ -8,32 +8,35 @@ class SearchUser extends Component {
     division: "",
     location: "",
     manager: "",
-    phoneNum: '',
+    phoneNum: "",
+    enterTerm: "",
   };
 
   componentDidMount() {
-    console.log(this.props)
+    console.log(this.props);
     this.setState({ phoneNum: this.props.visitorName });
     console.log("phoneNum", this.state.phoneNum);
   }
 
   onSearchSubmit = async (term) => {
-    let token = localStorage.getItem("token");
     console.log("User Search Term: ", term);
-    const payload = {
-      searchterm: term,
-      token: token
-    };
+    if (term === "") {
+      this.setState({ enterTerm: "Please enter a search term" });
+    } else {
+      const payload = {
+        searchterm: term,
+      };
 
-    const resp = await axios.post("/snow/searchUser", payload);
-    console.log("ResponseData", resp.data.ResponseData.result);
-    console.log("ResponseData", resp.data);
-    this.setState({
-      results: resp.data.ResponseData.result,
-      division: resp.data.division,
-      location: resp.data.location,
-      manager: resp.data.manager,
-    });
+      const resp = await axios.post("/snow/searchUser", payload);
+      console.log("ResponseData", resp.data.ResponseData.result);
+      console.log("ResponseData", resp.data);
+      this.setState({
+        results: resp.data.ResponseData.result,
+        division: resp.data.division,
+        location: resp.data.location,
+        manager: resp.data.manager,
+      });
+    }
   };
 
   render() {
@@ -73,6 +76,7 @@ class SearchUser extends Component {
             {resultList}
           </table>
         </div>
+            {this.state.enterTerm}
       </div>
     );
   }

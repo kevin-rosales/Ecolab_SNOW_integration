@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const getData = async (link) => {
+const getData = async (link,authorization) => {
   let reqURL = link;
 
   let config = {
@@ -9,7 +9,7 @@ const getData = async (link) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.BASIC_AUTH,
+      Authorization: authorization,
     },
   };
 

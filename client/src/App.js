@@ -44,6 +44,7 @@ class App extends Component {
       function (error) {
         const originalRequest = error.config;
         console.log(error);
+
         if (
           error.response.status === 401 &&
           originalRequest.url ===
@@ -55,19 +56,23 @@ class App extends Component {
 
         if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
+
           const refreshToken = localStorageService.getRefreshToken();
-          return axios
-            .post("/snow/refresh", {
-              refresh_token: refreshToken,
-            })
-            .then((res) => {
-              if (res.status === 201) {
-                localStorageService.setToken(res.data);
-                axios.defaults.headers.common["Authorization"] =
-                  "Bearer " + localStorageService.getAccessToken();
-                return axios(originalRequest);
-              }
-            });
+
+          const payload = {
+            refresh_token: refreshToken,
+          };
+
+          return axios.post("/snow/refresh", payload).then((res) => {
+            console.log(res);
+
+            if (res.status === 201 || res.status === 200) {
+              localStorageService.setToken(res.data);
+              axios.defaults.headers.common["Authorization"] =
+                "Bearer " + localStorageService.getAccessToken();
+              return axios(originalRequest);
+            }
+          });
         }
         return Promise.reject(error);
       }
