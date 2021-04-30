@@ -5,6 +5,7 @@ class SearchKnowledge extends Component {
   state = {
     articles: [],
     ownershipGroup: "",
+    enterTerm:''
   };
 
   onSearchSubmit = async (term) => {

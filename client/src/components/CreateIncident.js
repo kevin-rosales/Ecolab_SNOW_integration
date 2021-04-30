@@ -34,7 +34,7 @@ class CreateIncident extends Component {
       short_description: this.state.incident.short_description,
       assigned_to: this.state.incident.assigned_to,
       assignment_group: this.state.incident.assignment_group,
-      description: this.state.incident.description
+      description: this.state.incident.description,
     };
 
     axios

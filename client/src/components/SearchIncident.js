@@ -6,6 +6,7 @@ class SearchIncident extends Component {
   state = {
     Incidents: [],
     user: "",
+    enterTerm: ''
   };
 
   onSearchSubmit = async (term) => {

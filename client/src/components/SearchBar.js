@@ -24,6 +24,7 @@ class SearchBar extends Component {
                 type="text"
                 value={this.state.term}
                 onChange={(e) => this.setState({ term: e.target.value })}
+                required
               />
               <button
                 className="btn btn-primary"

@@ -5,9 +5,10 @@ class LoginPage extends Component {
     e.preventDefault();
     window.open(
       "https://ecolabqa.service-now.com/oauth_auth.do?response_type=code&redirect_uri=https://quiet-everglades-59480.herokuapp.com/callback&client_id=0d18a00317aba4d424afc79f43a1effa&state=snow"
-    );
+      );
+      window.location.href = "/user";
   };
-
+  
   render() {
     return (
       <div id="Mspage">
