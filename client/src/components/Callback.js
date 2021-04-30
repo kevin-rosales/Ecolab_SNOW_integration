@@ -11,10 +11,10 @@ class Callback extends Component {
 
     let params = this.props.location.search;
     console.log(params);
-    
+
     const tokens = localStorageService.getAccessToken();
 
-    if (!tokens || params.indexOf("code") <= 0 ) {
+    if (params.indexOf("code") <= 0 ) {
       this.setState({
         authStatus: "Login Failed!",
       });
